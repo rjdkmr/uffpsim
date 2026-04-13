@@ -50,7 +50,7 @@ class UFFPSimSearchEngine(uffpsimLib.FPSearchEngineBase):
         fp_input_arguments = json.loads(self.fp_store.fp_params_json)
         self.fp_calculator = FPCalculator(fp_input_arguments["fp_type"], fp_input_arguments["fp_params"])
 
-    def search(self, mol_data: str, threshold: float = 0.2, limit_by: int = 10) -> List[Tuple[str, float]]:
+    def search(self, mol_data: str, threshold: float = 0.2, limit_by: int = 10) -> Tuple[List[Tuple[str, float]],int]:
         """
         Performs a single search operation using the given molecular data and returns a list of tuples containing the identifiers and similarity scores of the top-k matches.
 
