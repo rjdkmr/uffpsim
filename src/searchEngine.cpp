@@ -106,7 +106,8 @@ std::tuple<std::vector<std::tuple<std::string, float>>, uint64_t> FPSearchEngine
     return std::make_tuple(results, num_sim_ops);
 }
 
-void FPSearchEngine::_normal_search_memory(const std::vector<utils::dt_inner_clusters_fingerprints_maxscore>& popCountBinsWithMaxScore, 
+/*
+void FPSearchEngine::_normal_search_memory_new(const std::vector<utils::dt_inner_clusters_fingerprints_maxscore>& popCountBinsWithMaxScore, 
                                     uint64_t *queryCFp, float threshold, int limits,
                                     std::vector<std::tuple<std::string, float>> &results, uint64_t *num_sim_ops) {
     uint64_t commonPopCountThreshold = 0;
@@ -216,18 +217,11 @@ void FPSearchEngine::_normal_search_memory(const std::vector<utils::dt_inner_clu
         }
     }
 }
+*/
 
-/* ** OLD VERSION of search function
-    * This version go through all clusters that qualify according to the input threshold.
-    * It means it would calculate for all fingerprints in those clusters, which might not
-    * be required when hits are found early on during the search and requested limits are reached 
-    * before going through all clusters that qualify according to the input threshold.
-    * This severely slows down when top-k hits are requested with low threshold.
-    * 
-    * 
-void FPSearchEngine::_normal_search_memory_old(std::vector<utils::dt_inner_clusters_fingerprints_maxscore> popCountBinsWithMaxScore, 
+void FPSearchEngine::_normal_search_memory(const std::vector<utils::dt_inner_clusters_fingerprints_maxscore>& popCountBinsWithMaxScore, 
                                     uint64_t *queryCFp, float threshold, int limits,
-                                    std::vector<std::tuple<std::string, float>> &results) {
+                                    std::vector<std::tuple<std::string, float>> &results, uint64_t *num_sim_ops) {
     uint64_t commonPopCountThreshold = 0;
     float coeff, max_coeff = 0;
     uint64_t common_popcnt = 0;
@@ -254,6 +248,7 @@ void FPSearchEngine::_normal_search_memory_old(std::vector<utils::dt_inner_clust
         uint64_t inner_start = 0;
         for(size_t cid=0; cid < inner_clusters_fingerprints.num_clusters; cid++, clusterFp_ptr += _CFPSize) {
             common_popcnt = bitwise_and_popcount(clusterFp_ptr+_molIdOffset, queryCFp+_molIdOffset, _fpSize);
+            (*num_sim_ops)++;
 
             if (common_popcnt >= commonPopCountThreshold) {
                 uint64_t inner_end = clusterFp_ptr[0];
@@ -268,6 +263,7 @@ void FPSearchEngine::_normal_search_memory_old(std::vector<utils::dt_inner_clust
                             if (coeff > max_coeff) max_coeff = coeff;
                         }
                     }
+                    (*num_sim_ops)++;
                 }
             } else {
                 fp_ptr += clusterFp_ptr[0] - inner_start;
@@ -276,7 +272,6 @@ void FPSearchEngine::_normal_search_memory_old(std::vector<utils::dt_inner_clust
         }
     }
 }
-*/
 
 void FPSearchEngine::_normal_search_disk(const std::vector<utils::dt_inner_clusters_fingerprints_maxscore>& popCountBinsWithMaxScore, 
                                     uint64_t *queryCFp, float threshold, int limits,
