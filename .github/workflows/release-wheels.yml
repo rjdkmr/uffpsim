@@ -44,7 +44,10 @@ jobs:
             brew install hdf5 pkg-config libomp;
             test -d /opt/homebrew/opt/libomp/include -o -d /usr/local/opt/libomp/include"
           CIBW_ENVIRONMENT_MACOS: >-
-            CC=clang CXX=clang++ UFFPSIM_MACOS_OPENMP=1 MACOSX_DEPLOYMENT_TARGET=10.15
+            CC=clang
+            CXX=clang++
+            UFFPSIM_MACOS_OPENMP=1
+            MACOSX_DEPLOYMENT_TARGET=14.0
             CPPFLAGS="-I/opt/homebrew/opt/hdf5/include -I/usr/local/opt/hdf5/include -I/opt/homebrew/opt/libomp/include -I/usr/local/opt/libomp/include"
             CFLAGS="-Xpreprocessor -fopenmp"
             CXXFLAGS="-Xpreprocessor -fopenmp"
