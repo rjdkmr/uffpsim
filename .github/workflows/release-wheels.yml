@@ -33,7 +33,6 @@ jobs:
           CIBW_SKIP: "*-musllinux_*"
           CIBW_MANYLINUX_X86_64_IMAGE: "manylinux_2_28"
           CIBW_ARCHS_LINUX: "x86_64"
-          CIBW_ARCHS_MACOS: "x86_64"
           CIBW_BEFORE_ALL_LINUX: >-
             /bin/bash -c "
             dnf install -y openssl-devel pkgconfig;
@@ -54,7 +53,7 @@ jobs:
       - name: Upload wheel artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: python-package-distributions
+          name: python-package-distributions-${{ matrix.os }}-${{ strategy.job-index }}
           path: ./wheelhouse/*.whl
 
   upload_release_assets:
@@ -67,8 +66,8 @@ jobs:
       - name: Download wheel artifacts
         uses: actions/download-artifact@v4
         with:
-          path: python-package-distributions
-          merge-multiple: false
+          pattern: python-package-distributions-*
+          merge-multiple: true
 
       - name: Upload wheels to GitHub release assets
         uses: softprops/action-gh-release@v2
@@ -91,8 +90,9 @@ jobs:
       - name: Download wheel artifacts
         uses: actions/download-artifact@v4
         with:
-          name: python-package-distributions
+          pattern: python-package-distributions-*
           path: dist/
+          merge-multiple: true
       
       - name: List files
         run: ls -R dist/
