@@ -54,7 +54,7 @@ jobs:
       - name: Upload wheel artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: python-package-distributions
+          name: python-package-distributions-${{ matrix.os }}-${{ strategy.job-index }}
           path: ./wheelhouse/*.whl
 
   upload_release_assets:
@@ -67,8 +67,7 @@ jobs:
       - name: Download wheel artifacts
         uses: actions/download-artifact@v4
         with:
-          path: wheels
-          pattern: wheels-*
+          path: python-package-distributions-*
           merge-multiple: false
 
       - name: Upload wheels to GitHub release assets
@@ -92,7 +91,7 @@ jobs:
       - name: Download wheel artifacts
         uses: actions/download-artifact@v4
         with:
-          name: python-package-distributions
+          name: python-package-distributions-*
           path: dist/
           merge-multiple: true
       
