@@ -75,3 +75,29 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: wheels/**/*.whl
+
+  publish-pypi:
+    name: Publish to PyPI
+    needs: build_wheels # Ensures publishing only happens if the build succeeds
+    runs-on: ubuntu-latest
+
+    environment:
+      name: pypi # Matches the environment configured in PyPI
+      url: https://pypi.org # Optional: adds a direct link to your job output
+    
+    permissions:
+      id-token: write # MANDATORY for PyPI Trusted Publishing
+
+    steps:
+      - name: Download wheel artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: python-package-distributions
+          path: dist/
+          merge-multiple: true
+      
+      - name: List files
+        run: ls -R dist/
+
+      - name: Publish Package to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
