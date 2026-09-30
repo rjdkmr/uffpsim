@@ -15,7 +15,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-14, macos-15]
+        include:
+          - os: macos-14
+            deployment_target: "14.0"
+          - os: macos-15
+            deployment_target: "15.0"
+          - os: ubuntu-latest
+            deployment_target: "" # Leave empty for Linux
+
 
     steps:
       - name: Checkout source
@@ -47,7 +54,7 @@ jobs:
             CC=clang
             CXX=clang++
             UFFPSIM_MACOS_OPENMP=1
-            MACOSX_DEPLOYMENT_TARGET=14.0
+            MACOSX_DEPLOYMENT_TARGET=${{ matrix.deployment_target }}
             CPPFLAGS="-I/opt/homebrew/opt/hdf5/include -I/usr/local/opt/hdf5/include -I/opt/homebrew/opt/libomp/include -I/usr/local/opt/libomp/include"
             CFLAGS="-Xpreprocessor -fopenmp"
             CXXFLAGS="-Xpreprocessor -fopenmp"
